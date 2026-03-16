@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PROGRAM KALKULATOR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink-100: #fff0f5;
+            --pink-200: #ffd6e7;
+            --pink-300: #ffb3d1;
+            --pink-400: #ff85b3;
+            --pink-500: #f06292;
+            --pink-600: #c2185b;
+            --rose-soft: #ffe4ef;
+            --cream: #fff8fb;
+            --shadow-pink: rgba(240, 98, 146, 0.25);
+            --text-dark: #5a2a3a;
+            --text-mid: #a0506a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #fff0f5;
+            background-image:
+                radial-gradient(circle at 15% 25%, rgba(255, 182, 209, 0.55) 0%, transparent 22%),
+                radial-gradient(circle at 82% 15%, rgba(255, 210, 230, 0.5) 0%, transparent 18%),
+                radial-gradient(circle at 70% 75%, rgba(248, 180, 207, 0.45) 0%, transparent 20%),
+                radial-gradient(circle at 5%  80%, rgba(255, 220, 235, 0.5) 0%, transparent 16%),
+                radial-gradient(circle at 50% 50%, rgba(255, 240, 248, 0.3) 0%, transparent 35%),
+                radial-gradient(circle at 90% 50%, rgba(255, 200, 220, 0.35) 0%, transparent 14%),
+                radial-gradient(circle at 30% 90%, rgba(255, 190, 215, 0.4) 0%, transparent 15%),
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 28px,
+                    rgba(255, 182, 209, 0.07) 28px,
+                    rgba(255, 182, 209, 0.07) 30px
+                );
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Quicksand', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -120px;
+            right: -120px;
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            border: 40px solid rgba(255, 182, 209, 0.18);
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -100px;
+            left: -100px;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            border: 35px solid rgba(255, 210, 230, 0.2);
+            pointer-events: none;
+        }
+
+        .ring-extra {
+            position: fixed;
+            top: 55%;
+            left: -60px;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 22px solid rgba(248, 187, 208, 0.15);
+            pointer-events: none;
+        }
+
+        center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            animation: fadeInUp 0.6s ease both;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Title — tanpa garis bawah */
+        center > b {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            color: var(--pink-600);
+            letter-spacing: 0.05em;
+            text-shadow: 0 1px 3px rgba(194, 24, 91, 0.15);
+        }
+
+        /* Table wrapper */
+        table {
+            border: none !important;
+            border-collapse: separate;
+            border-spacing: 8px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow:
+                0 8px 32px var(--shadow-pink),
+                0 2px 8px rgba(240, 98, 146, 0.12),
+                inset 0 1px 0 rgba(255,255,255,0.9);
+            outline: 1.5px solid rgba(255, 182, 209, 0.4);
+        }
+
+        /* Display screen */
+        #layar {
+            width: 100%;
+            border: none;
+            background: linear-gradient(135deg, #fff0f7, #ffe8f2);
+            border-radius: 14px;
+            padding: 14px 18px;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6rem;
+            color: var(--text-dark);
+            text-align: right;
+            outline: 2px solid var(--pink-200);
+            box-shadow:
+                inset 0 3px 10px rgba(240, 98, 146, 0.08),
+                0 1px 3px rgba(255,255,255,0.9);
+            transition: outline-color 0.2s;
+            letter-spacing: 0.02em;
+        }
+
+        #layar:focus {
+            outline-color: var(--pink-400);
+        }
+
+        /* Table cells - remove default styling */
+        td {
+            border: none !important;
+            padding: 0;
+        }
+
+        /* All buttons base */
+        button {
+            width: 60px;
+            height: 52px;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0);
+            transition: background 0.15s;
+            border-radius: inherit;
+        }
+
+        button:active::after {
+            background: rgba(255,255,255,0.25);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(1px) scale(0.96);
+        }
+
+        /* Number buttons */
+        td:not(:last-child) button:not([onclick="hitung()"]):not([onclick="hapus()"]) {
+            background: linear-gradient(145deg, #ffffff, #ffe8f2);
+            color: var(--text-dark);
+            box-shadow:
+                0 4px 10px rgba(240, 98, 146, 0.15),
+                0 1px 3px rgba(240, 98, 146, 0.1),
+                inset 0 1px 0 rgba(255,255,255,0.95);
+            outline: 1px solid rgba(255, 182, 209, 0.5);
+        }
+
+        td:not(:last-child) button:not([onclick="hitung()"]):not([onclick="hapus()"]):hover {
+            background: linear-gradient(145deg, #fff0f7, #ffd6e7);
+            box-shadow:
+                0 8px 18px rgba(240, 98, 146, 0.22),
+                inset 0 1px 0 rgba(255,255,255,0.95);
+        }
+
+        /* Operator buttons (last column) */
+        td:last-child button:not([onclick="hapus()"]) {
+            background: linear-gradient(145deg, #f8b4cf, #f06292);
+            color: #fff;
+            box-shadow:
+                0 4px 14px rgba(240, 98, 146, 0.4),
+                inset 0 1px 0 rgba(255,255,255,0.25);
+        }
+
+        td:last-child button:not([onclick="hapus()"]):hover {
+            background: linear-gradient(145deg, #f9bcd3, #e91e8c);
+            box-shadow: 0 8px 22px rgba(240, 98, 146, 0.5);
+        }
+
+        /* Equals button */
+        button[onclick="hitung()"] {
+            background: linear-gradient(145deg, #f48fb1, #e91e63);
+            color: #fff;
+            box-shadow:
+                0 4px 14px rgba(233, 30, 99, 0.4),
+                inset 0 1px 0 rgba(255,255,255,0.25);
+        }
+
+        button[onclick="hitung()"]:hover {
+            background: linear-gradient(145deg, #f48fb1, #c2185b);
+            box-shadow: 0 8px 22px rgba(233, 30, 99, 0.5);
+        }
+
+        /* Clear button - full width */
+        tr:last-child td {
+            padding: 0;
+        }
+
+        button[onclick="hapus()"] {
+            width: 100%;
+            background: linear-gradient(145deg, #fce4ec, #f8bbd0);
+            color: var(--pink-600);
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            font-size: 0.95rem;
+            box-shadow:
+                0 4px 10px rgba(240, 98, 146, 0.18),
+                inset 0 1px 0 rgba(255,255,255,0.8);
+            outline: 1px solid rgba(248, 187, 208, 0.7);
+        }
+
+        button[onclick="hapus()"]:hover {
+            background: linear-gradient(145deg, #fdd8e8, #f48fb1);
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(240, 98, 146, 0.3);
+        }
+
+        /* Dot button (decimal) */
+        button[onclick="tekanAngka('.')"] {
+            font-size: 1.4rem;
+            color: var(--pink-500);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ring-extra"></div>
+
+    <center>
+        <b>PROGRAM KALKULATOR</b>
+        <br>
+
+        <table border="1">
+            <tr>
+                <td colspan="4"><input id="layar"></td>
+            </tr>
+            <tr>
+                <td><button onclick="tekanAngka(1)">1</button></td>
+                <td><button onclick="tekanAngka(2)">2</button></td>
+                <td><button onclick="tekanAngka(3)">3</button></td>
+                <td><button onclick="tekanOperator('+')">+</button></td>
+            </tr>
+            <tr>
+                <td><button onclick="tekanAngka(4)">4</button></td>
+                <td><button onclick="tekanAngka(5)">5</button></td>
+                <td><button onclick="tekanAngka(6)">6</button></td>
+                <td><button onclick="tekanOperator('-')">-</button></td>
+            </tr>
+            <tr>
+                <td><button onclick="tekanAngka(7)">7</button></td>
+                <td><button onclick="tekanAngka(8)">8</button></td>
+                <td><button onclick="tekanAngka(9)">9</button></td>
+                <td><button onclick="tekanOperator('*')">*</button></td>
+            </tr>
+            <tr>
+                <td><button onclick="tekanAngka('.')">.</button></td>
+                <td><button onclick="tekanAngka(0)">0</button></td>
+                <td><button onclick="hitung()">=</button></td>
+                <td><button onclick="tekanOperator('/')">/</button></td>
+            </tr>
+            <tr>
+                <td colspan="4"><button onclick="hapus()">C</button></td>
+            </tr>
+        </table>
+    </center>
+
+    <script>
+        // Variabel untuk menyimpan angka pertama, angka kedua, dan operator
+        var angkaPertama = 0;
+        var angkaKedua = 0;
+        var operator = "";
+
+        // Fungsi untuk menangani penekanan tombol angka
+        function tekanAngka(angka) {
+            var layar = document.getElementById("layar");
+            layar.value += angka;
+        }
+
+        // Fungsi untuk menangani penekanan tombol operator
+        function tekanOperator(op) {
+            var layar = document.getElementById("layar");
+            angkaPertama = parseFloat(layar.value);
+            operator = op;
+            layar.value = "";
+        }
+
+        // Fungsi untuk menghitung hasil berdasarkan operator yang dipilih
+        function hitung() {
+            var layar = document.getElementById("layar");
+            angkaKedua = parseFloat(layar.value);
+            var hasil = 0;
+
+            if (operator == "+") {
+                hasil = angkaPertama + angkaKedua; 
+            } else if (operator == "-") {
+                hasil = angkaPertama - angkaKedua;
+            } else if (operator == "*") {
+                hasil = angkaPertama * angkaKedua;
+            } else if (operator == "/") {
+                if (angkaKedua == 0) {
+                    layar.value = "Error: Tidak bisa bagi 0";
+                    return;
+                } else {
+                    hasil = angkaPertama / angkaKedua;
+                }
+            } else {
+                layar.value = "Error: Pilih operator dulu!";
+                return;
+            }
+
+            // Tampilkan hasil di layar
+            layar.value = hasil;
+            angkaPertama = hasil;
+            operator = "";
+        }
+
+        // Fungsi untuk menghapus layar dan reset variabel
+        function hapus() {
+            document.getElementById("layar").value = "";
+            angkaPertama = 0;
+            angkaKedua = 0;
+            operator = "";
+        }
+    </script>
+</body>
+</html>
